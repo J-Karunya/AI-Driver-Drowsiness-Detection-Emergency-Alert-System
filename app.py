@@ -33,7 +33,7 @@ def load_models():
     
     # Load PyTorch LSTM
     # We use untrained weights here as a structural demo if model_path is not found
-    lstm_model = get_model(device='cpu') 
+    lstm_model = get_model('drowsiness_lstm.pt', device='cpu') 
     
     return yolo_model, lstm_model
 
