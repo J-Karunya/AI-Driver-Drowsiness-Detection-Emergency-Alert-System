@@ -31,9 +31,12 @@ def load_models():
     # Load YOLOv8 for phone detection (nano is fastest)
     yolo_model = YOLO("yolov8n.pt")
     
+    # Check for GPU
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    
     # Load PyTorch LSTM
     # We use untrained weights here as a structural demo if model_path is not found
-    lstm_model = get_model('drowsiness_lstm.pt', device='cpu') 
+    lstm_model = get_model('drowsiness_lstm.pt', device=device) 
     
     return yolo_model, lstm_model
 
@@ -102,7 +105,8 @@ class ADASVideoProcessor(VideoTransformerBase):
             self.sequence_buffer.append([ear, mar])
             if len(self.sequence_buffer) == 30:
                 # Prepare tensor: shape (1, 30, 2)
-                seq_tensor = torch.tensor(list(self.sequence_buffer), dtype=torch.float32).unsqueeze(0)
+                device = next(self.lstm_model.parameters()).device
+                seq_tensor = torch.tensor(list(self.sequence_buffer), dtype=torch.float32).unsqueeze(0).to(device)
                 with torch.no_grad():
                     output = self.lstm_model(seq_tensor)
                     # output shape (1, 2). Softmax for probabilities
