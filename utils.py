@@ -42,10 +42,10 @@ def get_head_pose(face_2d, face_3d, img_w, img_h):
     # Camera matrix
     focal_length = 1 * img_w
     cam_matrix = np.array([
-        [focal_length, 0, img_h / 2],
-        [0, focal_length, img_w / 2],
+        [focal_length, 0, img_w / 2],
+        [0, focal_length, img_h / 2],
         [0, 0, 1]
-    ])
+    ], dtype=np.float64)
     
     # Distortion coefficients
     dist_matrix = np.zeros((4, 1), dtype=np.float64)
@@ -57,14 +57,13 @@ def get_head_pose(face_2d, face_3d, img_w, img_h):
     rmat, jac = cv2.Rodrigues(rot_vec)
     
     # Get angles
-    angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
-    
-    # Convert to degrees
-    x = angles[0] * 360
-    y = angles[1] * 360
-    z = angles[2] * 360
-    
-    return x, y, z
+    angles, _, _, _, _, _ = cv2.RQDecomp3x3(rmat)
+
+    x = angles[0]
+    y = angles[1]
+    z = angles[2]
+
+    return x, y, z  
 
 def extract_mediapipe_features(landmarks, img_w, img_h):
     """

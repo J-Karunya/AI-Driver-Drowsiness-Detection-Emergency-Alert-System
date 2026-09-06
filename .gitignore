@@ -1,1 +1,17 @@
-/Fold1_part1
+# Environment
+.env
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Dataset
+UTA-RLDD Face Cropped Video/
+
+# Model weights
+*.pt
+
+# VS Code
+.vscode/
